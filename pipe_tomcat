@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    tools {
+      git 'git'
+      maven 'maven388'
+    }
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git 'https://github.com/mohansgithub/boxfuse-sample-java-war-hello.git'
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                bat 'mvn clean install'
+            }
+        }
+		stage('Tommcat Deploy') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: '25d48f33-bebd-453e-ac3b-754a7a89ac6a', path: '', url: 'http://localhost:9090')], contextPath: '/hello-1.0', war: '**/*.war'
+            }
+        }
+    }
+}
